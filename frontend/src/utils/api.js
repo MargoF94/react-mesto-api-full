@@ -16,9 +16,6 @@ class Api{
     return fetch(`${this._baseUrl}/cards`, {
       method: 'GET',
       headers: this._headers,
-      // headers: {
-      //   authorization: this._token
-      // }
     }).then(this._checkResponse)
   }
 

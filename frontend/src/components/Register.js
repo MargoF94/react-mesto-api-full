@@ -57,7 +57,7 @@ function Register ({ onRegister}) {
           className="button register__button">
           Зарегистрироваться
         </button>
-        <span className="register__text">Уже зарегистрированы?  <Link className="register__link" to="sign-in">Войти</Link></span>
+        <span className="register__text">Уже зарегистрированы?  <Link className="register__link" to="signin">Войти</Link></span>
 
       </form>
     </div>

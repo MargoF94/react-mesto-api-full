@@ -18,10 +18,10 @@ function Header({isLoggedIn, onLogout, email}) {
               <span className="header__email">{email}</span>
               <button className="header__logout-button header__link" onClick={handleLogout}>Выйти</button>
             </> }
-          { (location.pathname === '/sign-in') &&
-            <Link className="header__link" to="/sign-up">Регистрация</Link> } 
-          { (location.pathname === '/sign-up') &&
-            <Link className="header__link" to="/sign-in">Войти</Link>}
+          { (location.pathname === '/signin') &&
+            <Link className="header__link" to="/signup">Регистрация</Link> } 
+          { (location.pathname === '/signup') &&
+            <Link className="header__link" to="/signin">Войти</Link>}
         </div>
       </div>
       </header>

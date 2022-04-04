@@ -122,7 +122,7 @@ function App() {
   function handleLogout() {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    history.push('/sign-in');
+    history.push('/signin');
   }
 
   function handleAddPlaceSubmit(name, link) {
@@ -139,7 +139,7 @@ function App() {
   function handleRegister(email, password) {
     auth.register(email, password)
     .then(() => {
-      history.push('/sign-in');
+      history.push('/signin');
       setIsSuccess(true);
     })
     .catch((err) => {
@@ -173,24 +173,6 @@ function App() {
       .catch(err => console.log(err))
     }
   }, [isLoggedIn]);
-
-  // useEffect(() => {
-  //   api.getUserData()
-  //     .then((data) => {
-  //       setCurrentUser(data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-
-  //     api.getInitialCards()
-  //     .then((data) => {
-  //       setCards(data)
-  //     })
-  //     .catch((err) => {
-  //       console.log(err)
-  //     })
-  // }, []);
   
   // проверяет, авторизирован ли пользователь через проверку токена
   useEffect(() => {
@@ -233,18 +215,18 @@ function App() {
             onCardLike={handleLikeClick}
             onCardDelete={handleCardDelete}
             />
-          <Route path="/sign-in">
+          <Route path="/signin">
             <Login 
               onLogin={handleLoginSubmit}
             />
           </Route>
 
-          <Route path="/sign-up">
+          <Route path="/signup">
             <Register
               onRegister={handleRegister} />
           </Route> 
           <Route path="*">
-              {isLoggedIn ? <Redirect to="/"/> : <Redirect to="/sign-in"/>}
+              {isLoggedIn ? <Redirect to="/"/> : <Redirect to="/signin"/>}
             </Route> 
         </Switch>
 
