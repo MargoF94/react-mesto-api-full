@@ -15,6 +15,17 @@ const auth = require('./middlewares/auth');
 const app = express();
 app.use(cookieParser()); // подключаем парсер кук как мидлвэр
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE'); // разрешаем кросс-доменные запросы любых типов (по умолчанию)
+  res.header('Access-Control-Allow-Headers', '*'); // разрешаем кросс-доменные запросы с этими заголовками
+  res.header('Access-Control-Allow-Origin', '*');
+
+  if (req.method === 'OPTIONS') {
+    res.send(200);
+  }
+  next();
+});
+
 const {
   createUser,
   login,
@@ -30,6 +41,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(requestLogger); // подключаем логгер запросов
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.post('/signin', validateSignIn, login);
 app.post('/signup', validateSignUp, createUser);
