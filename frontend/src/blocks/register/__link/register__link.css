@@ -1,0 +1,6 @@
+.register__link {
+  text-decoration: none;
+}
+.register__link:visited {
+  color: #FFFFFF;
+}

@@ -1,0 +1,11 @@
+.element {
+  display: inline-block;
+  background-color: #fff;
+  border-radius: 10px;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 0;
+  position: relative;
+}

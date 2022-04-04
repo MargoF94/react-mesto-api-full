@@ -1,0 +1,21 @@
+.register__input {
+  box-sizing: border-box;
+  width: 358px;
+  display: block;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid #CCC;
+  padding-bottom: 7px;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #fff;
+  background-color: #000;
+}
+
+.register__input:focus {
+  outline: none;
+}
