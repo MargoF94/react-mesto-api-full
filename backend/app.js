@@ -16,7 +16,7 @@ const app = express();
 app.use(cookieParser()); // подключаем парсер кук как мидлвэр
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE'); // разрешаем кросс-доменные запросы любых типов (по умолчанию)
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'); // разрешаем кросс-доменные запросы любых типов (по умолчанию)
   res.header('Access-Control-Allow-Headers', '*'); // разрешаем кросс-доменные запросы с этими заголовками
   res.header('Access-Control-Allow-Origin', '*');
 
