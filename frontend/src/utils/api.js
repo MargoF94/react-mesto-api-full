@@ -1,7 +1,7 @@
 class Api{
   constructor({ baseUrl, headers }) {
-    this._baseUrl = baseUrl;  // https://mesto.nomoreparties.co/v1/cohort-33 // cb9cc5b1-ca70-410d-8f44-19fd89bacd17
-    this.headers = headers;
+    this._baseUrl = baseUrl;
+    this._headers = headers;
     this._token = headers.authorization;
   }
 
@@ -15,9 +15,10 @@ class Api{
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'GET',
-      headers: {
-        authorization: this._token
-      }
+      headers: this._headers,
+      // headers: {
+      //   authorization: this._token
+      // }
     }).then(this._checkResponse)
   }
 
@@ -107,8 +108,8 @@ class Api{
 const api = new Api({
   baseUrl: 'api.local-mesto.nomoredomains.work',
   headers: {
-    authorization: 'cb9cc5b1-ca70-410d-8f44-19fd89bacd17',
-    'Content-Type': 'application/json'
+    authorization: `${localStorage.getItem('jwt')}`,
+    'Content-Type': 'application/json',
   }
 });
 

@@ -1,4 +1,4 @@
-export const baseUrl = 'https://auth.nomoreparties.co';
+export const baseUrl = 'api.local-mesto.nomoredomains.work';
 
 const request = ({endPoint, method = 'POST', token, body}) => {
   const config = {
