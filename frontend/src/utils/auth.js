@@ -15,6 +15,9 @@ const request = ({endPoint, method = 'POST', token, body}) => {
   return fetch(`${baseUrl}/${endPoint}`, config)
     .then((res) => {
         if (res.ok){
+          if (res.token) {
+            localStorage.setItem('jwt', res.token)
+          }
           return res.json();
         }
 

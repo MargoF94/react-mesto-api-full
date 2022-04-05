@@ -43,6 +43,24 @@ module.exports.getUserdById = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
+  const { authorization } = req.headers;
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    next(new UnauthorizedError('Нет доступа.'));
+  }
+  const token = authorization.replace('Bearer ', '');
+
+  const isAuthorized = () => {
+    try {
+      return jwt.varify(token, JWT_SECRET);
+    } catch (err) {
+      return false;
+    }
+  };
+
+  if (!isAuthorized) {
+    next(new UnauthorizedError('Нет доступа.'));
+  }
+
   User.findById(req.user._id)
     .then((user) => res.send({ data: user }))
     .catch(next);
@@ -171,7 +189,7 @@ module.exports.login = (req, res, next) => {
       );
       res.cookie('jwt', token, {
         httpOnly: true,
-      }).send({ token });
+      }).send({ jwt: token });
     })
     .catch(() => {
       next(new UnauthorizedError('Пожалуйста, зарегестрируйтесь.'));

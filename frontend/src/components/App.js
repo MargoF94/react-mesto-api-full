@@ -112,7 +112,7 @@ function App() {
         if(!data.token) {
           return
         }
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('jwt', data.token);
         handleLogin(email);
         history.push('/');
       })
@@ -120,7 +120,7 @@ function App() {
   }
 
   function handleLogout() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('jwt');
     setIsLoggedIn(false);
     history.push('/signin');
   }
@@ -176,9 +176,10 @@ function App() {
   
   // проверяет, авторизирован ли пользователь через проверку токена
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      auth.getContent(token).then((res) => {
+    const jwt = localStorage.getItem('jwt');
+    console.log(jwt);
+    if (jwt) {
+      auth.getContent(jwt).then((res) => {
         if (res) {
           setUserData({
             email: res.data.email,
@@ -187,7 +188,7 @@ function App() {
           setIsLoggedIn(true);  
           history.push('/')
         } else {
-          localStorage.removeItem('token');
+          localStorage.removeItem('jwt');
         }
       })
       .catch(err => console.log(err));
