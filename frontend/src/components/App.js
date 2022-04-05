@@ -114,10 +114,10 @@ function App() {
     }
     auth.authorize(email, password)
       .then((data) => {
-        if(!data.token) {
+        if(!data.jwt) {
           return
         }
-        localStorage.setItem('jwt', data.token);
+        localStorage.setItem('jwt', data.jwt);
         handleLogin(email);
         history.push('/');
       })
@@ -165,6 +165,7 @@ function App() {
 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
+    console.log(jwt);
     if (isLoggedIn) {
       Promise.all([
         api.getUserData(jwt),
