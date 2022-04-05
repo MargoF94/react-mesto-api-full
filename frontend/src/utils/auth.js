@@ -1,13 +1,13 @@
 export const baseUrl = 'https://api.local-mesto.nomoredomains.work';
 
-const request = ({endPoint, method = 'POST', token, body}) => {
+const request = ({endPoint, method = 'POST', jwt, body}) => {
   const config = {
     method,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       // если есть токен, добаляем эту строчку в заголовки
-      ...!!token && { 'Authorization': `Bearer ${token}` }
+      ...!!jwt && { 'Authorization': `Bearer ${jwt}` }
     },
     // если есть тело, добавляет эту строчку
     ...!!body && { body: JSON.stringify(body) },
@@ -15,8 +15,8 @@ const request = ({endPoint, method = 'POST', token, body}) => {
   return fetch(`${baseUrl}/${endPoint}`, config)
     .then((res) => {
         if (res.ok){
-          if (res.token) {
-            localStorage.setItem('jwt', res.token)
+          if (res.jwt) {
+            localStorage.setItem('jwt', res.jwt)
           }
           return res.json();
         }
@@ -25,11 +25,11 @@ const request = ({endPoint, method = 'POST', token, body}) => {
     })
 }
 
-export const getContent = (token) => {
+export const getContent = (jwt) => {
   return request({
     endPoint: 'users/me',
     method: 'GET',
-    token
+    jwt
   })
 }
 

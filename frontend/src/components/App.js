@@ -29,6 +29,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
+  // let jwt;
 
   const history = useHistory();
   
@@ -53,10 +54,11 @@ function App() {
     setSelectedCard({});
   }
   function handleLikeClick(card) {
+    const jwt = localStorage.getItem('jwt');
     // проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked)
+    api.changeLikeCardStatus(card._id, !isLiked, jwt)
       .then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
       })
@@ -65,7 +67,8 @@ function App() {
       });
   }
   function handleCardDelete(card) {
-    api.deleteCard(card._id)
+    const jwt = localStorage.getItem('jwt');
+    api.deleteCard(card._id, jwt)
       .then(() => {
         setCards((cards) => cards.filter((c) => c._id !== card._id))
       })
@@ -75,7 +78,8 @@ function App() {
   }
 
   function handleUpdateUser(name, about) {
-    api.changeUserData(name, about)
+    const jwt = localStorage.getItem('jwt');
+    api.changeUserData(name, about, jwt)
       .then((data) => {
         setCurrentUser(data);
         closeAllPopups();
@@ -86,7 +90,8 @@ function App() {
   }
 
   function handleUpdateAvatar(url) {
-    api.changeUserAvatar(url)
+    const jwt = localStorage.getItem('jwt');
+    api.changeUserAvatar(url, jwt)
       .then((data) => {
         setCurrentUser(data);
         closeAllPopups()
@@ -126,7 +131,8 @@ function App() {
   }
 
   function handleAddPlaceSubmit(name, link) {
-    api.addCard(name, link)
+    const jwt = localStorage.getItem('jwt');
+    api.addCard(name, link, jwt)
       .then((data) => {
         setCards([data, ...cards])
         closeAllPopups();
@@ -152,19 +158,17 @@ function App() {
   }
 
   function handleCloseInfoTooltip (isSuccess) {
-    // if(isSuccess) {
-    //   history.push('/');
-    // }
     setIsInfoPopupOpen(false);
   }
 
   // запрашиваем первоначальные карточки и информацию о пользователе
 
   useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
     if (isLoggedIn) {
       Promise.all([
-        api.getUserData(),
-        api.getInitialCards()
+        api.getUserData(jwt),
+        api.getInitialCards(jwt)
       ])
       .then(([user, cards]) => {
         setCurrentUser(user);
