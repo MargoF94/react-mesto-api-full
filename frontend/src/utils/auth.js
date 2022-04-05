@@ -1,4 +1,4 @@
-export const baseUrl = 'api.local-mesto.nomoredomains.work';
+export const baseUrl = 'https://api.local-mesto.nomoredomains.work';
 
 const request = ({endPoint, method = 'POST', token, body}) => {
   const config = {
