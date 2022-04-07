@@ -17,7 +17,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
     }).then(this._checkResponse)
   }
 
@@ -28,7 +27,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
       body: JSON.stringify({
         name: name,
         link: link
@@ -44,7 +42,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
     })
     .then(this._checkResponse)
   }
@@ -56,7 +53,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
     })
     .then(this._checkResponse)
   }
@@ -68,7 +64,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
       body: JSON.stringify({
         name: name,
         about: about
@@ -99,7 +94,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
     }).then(this._checkResponse)
   }
 
@@ -110,7 +104,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
     })
     .then(this._checkResponse)
   }
@@ -122,7 +115,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`
       },
-      credentials: 'include',
     }).then(this._checkResponse)
   }
 }

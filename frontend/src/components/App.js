@@ -413,6 +413,8 @@ function App() {
   const [userData, setUserData] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const jwt = localStorage.getItem('jwt');
+
   const history = useHistory();
   
   // обработчики событий
@@ -500,6 +502,7 @@ function App() {
           return
         }
         localStorage.setItem('jwt', data.jwt);
+        setIsLoggedIn(true);
         handleLogin(email);
         history.push('/');
       })
@@ -525,9 +528,11 @@ function App() {
 
   function handleRegister(email, password) {
     auth.register(email, password)
-    .then(() => {
-      history.push('/signin');
-      setIsSuccess(true);
+    .then((res) => {
+      if (res) {
+        history.push('/signin');
+        setIsSuccess(true);
+      }
     })
     .catch((err) => {
       setIsSuccess(false);
@@ -546,7 +551,6 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      const jwt = localStorage.getItem('jwt');
       Promise.all([
         api.getUserData(jwt),
         api.getInitialCards(jwt)
@@ -559,7 +563,7 @@ function App() {
     } else {
       localStorage.removeItem('jwt');
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, jwt]);
   
   // проверяет, авторизирован ли пользователь через проверку токена
   useEffect(() => {
@@ -570,11 +574,11 @@ function App() {
         if (res) {
           console.log(`In token-check: heres response data: ${res}`);
           setUserData({
-            email: res.data.email,
-            id: res.data._id
+            email: res.email,
+            id: res._id
           })
           setIsLoggedIn(true);  
-          history.push('/')
+          history.push('/');
         } else {
           localStorage.removeItem('jwt');
         }

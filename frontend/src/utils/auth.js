@@ -9,7 +9,6 @@ const request = ({endPoint, method = 'POST', jwt, body}) => {
       // если есть токен, добаляем эту строчку в заголовки
       ...!!jwt && { 'Authorization': `Bearer ${jwt}` }
     },
-    credentials: 'include',
     // если есть тело, добавляет эту строчку
     ...!!body && { body: JSON.stringify(body) },
   }
