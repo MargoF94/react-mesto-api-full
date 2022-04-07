@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -15,16 +16,30 @@ const auth = require('./middlewares/auth');
 const app = express();
 app.use(cookieParser()); // подключаем парсер кук как мидлвэр
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'); // разрешаем кросс-доменные запросы любых типов (по умолчанию)
-  res.header('Access-Control-Allow-Headers', '*'); // разрешаем кросс-доменные запросы с этими заголовками
-  res.header('Access-Control-Allow-Origin', '*');
+// const CORS_ALLOWED_ORIGIN = [
+//   'http://localhost:3000',
+//   'https://localhost:3000',
+//   'http://local-mesto.nomoredomains.xyz',
+//   'https://local-mesto.nomoredomains.xyz',
+//   'http://api.local-mesto.nomoredomains.xyz',
+//   'https://api.local-mesto.nomoredomains.xyz',
+// ];
 
-  if (req.method === 'OPTIONS') {
-    res.send(200);
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   const { origin } = req.headers;
+//   const { method } = req.method;
+
+//   if (method === 'OPTIONS') {
+//     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+//     res.header('Access-Control-Allow-Headers', '*');
+//     return res.end();
+//   }
+
+//   if (CORS_ALLOWED_ORIGIN.includes(origin)) {
+//     res.header('Access-Control-Allow-Origin', origin);
+//   }
+//   return next();
+// });
 
 const {
   createUser,
@@ -35,6 +50,8 @@ const {
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

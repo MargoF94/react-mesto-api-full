@@ -7,7 +7,7 @@ const NotFoundError = require('../errors/NotFoundError'); // 404
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
-      res.send({ data: cards });
+      res.status(200).send({ data: cards });
     })
     .catch(next);
 };

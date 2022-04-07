@@ -9,19 +9,17 @@ const request = ({endPoint, method = 'POST', jwt, body}) => {
       // если есть токен, добаляем эту строчку в заголовки
       ...!!jwt && { 'Authorization': `Bearer ${jwt}` }
     },
+    credentials: 'include',
     // если есть тело, добавляет эту строчку
     ...!!body && { body: JSON.stringify(body) },
   }
   return fetch(`${baseUrl}/${endPoint}`, config)
     .then((res) => {
         if (res.ok){
-          if (res.jwt) {
-            localStorage.setItem('jwt', res.jwt)
-          }
           return res.json();
         }
 
-        return Promise.reject(`Ошибка ${res.status}`)
+        return Promise.reject(`Ошибка ${res.status}`);
     })
 }
 
@@ -29,20 +27,35 @@ export const getContent = (jwt) => {
   return request({
     endPoint: 'users/me',
     method: 'GET',
-    jwt
+    jwt,
   })
 }
+
+// export const getContent = (jwt) => {
+//   return fetch(`${baseUrl}/users/me`, {
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `${jwt}`,
+//     },
+//   })
+//   .then();
+// }
 
 export const register = (email, password) => {
   return request({
     endPoint: 'signup',
-    body: { email, password }
+    body: { email, password },
   })
 }
 
 export const authorize = (email, password) => {
   return request({
     endPoint: 'signin',
-    body: { email, password }
+    body: { email, password },
   })
+  .then((res) => {
+    if (res.jwt) {
+      localStorage.setItem('jwt', res.jwt)
+    }
+  });
 }

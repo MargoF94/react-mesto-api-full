@@ -15,8 +15,9 @@ class Api{
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
     }).then(this._checkResponse)
   }
 
@@ -25,8 +26,9 @@ class Api{
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
       body: JSON.stringify({
         name: name,
         link: link
@@ -40,8 +42,9 @@ class Api{
       method: 'DELETE',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
     })
     .then(this._checkResponse)
   }
@@ -51,8 +54,9 @@ class Api{
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
     })
     .then(this._checkResponse)
   }
@@ -62,8 +66,9 @@ class Api{
       method: 'PATCH',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
       body: JSON.stringify({
         name: name,
         about: about
@@ -77,8 +82,9 @@ class Api{
       method: 'PATCH',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
       body: JSON.stringify({
         avatar: avatarUrl
       })
@@ -91,8 +97,9 @@ class Api{
       method: 'PUT',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
     }).then(this._checkResponse)
   }
 
@@ -101,8 +108,9 @@ class Api{
       method: 'DELETE',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
     })
     .then(this._checkResponse)
   }
@@ -112,8 +120,9 @@ class Api{
       method: `${isLiked ? 'PUT' : 'DELETE'}`,
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
+      credentials: 'include',
     }).then(this._checkResponse)
   }
 }
