@@ -8,17 +8,15 @@ module.exports = (req, res, next) => {
   console.dir(req.headers);
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    next(new UnauthorizedError('Пожалуйста, авторизуйтесь.'));
+    console.log('Couldnt find authorization header');
+    next(new UnauthorizedError('Пожалуйста, сначала авторизуйтесь.'));
   }
-  console.log(authorization);
+  console.log(`Authorization: ${req.headers.authorization}`);
   console.log(`Headers: ${req.headers}`);
+  console.log(`JWT_SECRET: ${JWT_SECRET}`);
   const token = authorization.replace('Bearer ', '');
 
-  // const authorization = req.cookies.jwt;
-  // if (!authorization) {
-  //   next(new UnauthorizedError('Пожалуйста, авторизуйтесь.'));
-  // }
-  console.log(authorization);
+  // console.log(`Token: ${token}`);
 
   let payload;
 

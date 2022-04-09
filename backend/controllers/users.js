@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError'); // 400
 const UnauthorizedError = require('../errors/UnauthorizedError'); // 401
@@ -187,6 +188,8 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
         { expiresIn: '7d' },
       );
+      console.log(token);
+      console.log(JWT_SECRET);
       return res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,

@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const {
   validateSignUp,
@@ -51,11 +51,18 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'https://local-mesto.nomoredomains.xyz',
+    'http://local-mesto.nomoredomains.xyz',
+    'https://localhost:3000',
+    'http://localhost:3000',
+  ],
+};
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(cors(corsOptions));
 
 app.use(requestLogger); // подключаем логгер запросов
 

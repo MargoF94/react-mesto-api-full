@@ -54,7 +54,10 @@ export const authorize = (email, password) => {
   })
   .then((res) => {
     if (res.jwt) {
-      localStorage.setItem('jwt', res.jwt)
+      console.log(`In authorize: my response: ${res}`);
+      console.log(`In authorize: got my JWT ${res.jwt}`);
+      localStorage.setItem('jwt', res.jwt);
+      return res.jwt;
     }
   });
 }

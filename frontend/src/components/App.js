@@ -497,14 +497,22 @@ function App() {
       return;
     }
     auth.authorize(email, password)
-      .then((data) => {
-        if(!data.jwt) {
+      .then((jwt) => {
+        console.log(`In handleLoginSubmit: data: ${jwt}`);
+        if(!jwt) {
           return
         }
-        localStorage.setItem('jwt', data.jwt);
+        console.log('In handleLoginSubmit: about to set returned JWT');
+        // localStorage.setItem('jwt', data.jwt); // уже стаановлен в authorize api
         setIsLoggedIn(true);
+        return jwt;
+      })
+      .then((jwt) => {
         handleLogin(email);
         history.push('/');
+        console.log(`In handleLoginSubmit: set following:\n
+        JWT: ${jwt}\n
+        isLoggedIn: ${isLoggedIn}`);
       })
       .catch(err => console.log(err));
   }
@@ -550,7 +558,9 @@ function App() {
   // запрашиваем первоначальные карточки и информацию о пользователе
 
   useEffect(() => {
-    if (isLoggedIn) {
+    console.log(`In useEffect in LoggedIn: isLoggedIn: ${isLoggedIn}`);
+    console.log(`In useEffect in LoggedIn: jwt: ${jwt}`); // we DO have the jwt here
+    if (isLoggedIn && jwt) {
       Promise.all([
         api.getUserData(jwt),
         api.getInitialCards(jwt)
@@ -577,7 +587,8 @@ function App() {
             email: res.email,
             id: res._id
           })
-          setIsLoggedIn(true);  
+          setIsLoggedIn(true);
+          console.log(`In tokenCheck: isLoggedIn: ${isLoggedIn}`);
           history.push('/');
         } else {
           localStorage.removeItem('jwt');
@@ -586,7 +597,25 @@ function App() {
       })
       .catch(err => console.log(err));
     }
-  }, [history]);
+  }, [history, isLoggedIn]);
+
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth.getContent(jwt)
+        .then((data) => {
+          if (data) {
+            setIsLoggedIn(true);
+          } else {
+            console.log('Could not login');
+          }
+          
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
