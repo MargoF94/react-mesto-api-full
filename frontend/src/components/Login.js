@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from "react-router-dom";
 
-function Login ({ onLogin }) {
+function Login ({ onLogin, isLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
+
   function handleEmailChange(e) {
     setEmail(e.target.value);
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push('/');
+    }
+  }, [history, isLoggedIn]);
 
   function handlePasswordChange(e) {
     setPassword(e.target.value);

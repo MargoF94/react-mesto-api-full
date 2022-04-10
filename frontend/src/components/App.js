@@ -413,7 +413,7 @@ function App() {
   const [userData, setUserData] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const jwt = localStorage.getItem('jwt');
+  // const jwt = localStorage.getItem('jwt');
 
   const history = useHistory();
   
@@ -485,36 +485,41 @@ function App() {
       });
   }
 
-  function handleLogin(email) {
-    setIsLoggedIn(true);
-    setUserData({
-      email: email
-    })
-  }
+  // function handleLogin(email) {
+  //   setIsLoggedIn(true);
+  //   setUserData({
+  //     email: email
+  //   })
+  // }
 
   function handleLoginSubmit(email, password) {
     if (!email || !password) {
       return;
     }
+    // Setting JWT after authorization
     auth.authorize(email, password)
       .then((jwt) => {
-        console.log(`In handleLoginSubmit: data: ${jwt}`);
+        console.log(`In handleLoginSubmit: res data: ${jwt}`);
         if(!jwt) {
-          return
+          throw new Error('Произошла ошибка (авторизации на фронте)');
         }
-        console.log('In handleLoginSubmit: about to set returned JWT');
-        // localStorage.setItem('jwt', data.jwt); // уже стаановлен в authorize api
-        setIsLoggedIn(true);
-        return jwt;
+        tokenCheck();
+        // localStorage.setItem('jwt', jwt);
+        // setIsLoggedIn(true);
+        // api.getUserData(jwt)
+        //   .then((user) => {
+        //     setUserData({
+        //       email: user.email
+        //     });
+        //     setIsLoggedIn(true);
+        //     history.push('/');
+        //     console.log(`In handleLoginSubmit: set following:\n
+        //     JWT: ${jwt}\n
+        //     isLoggedIn: ${isLoggedIn}`)
+        //   });
       })
-      .then((jwt) => {
-        handleLogin(email);
-        history.push('/');
-        console.log(`In handleLoginSubmit: set following:\n
-        JWT: ${jwt}\n
-        isLoggedIn: ${isLoggedIn}`);
-      })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .finally(() => console.log(`In handleLoginSubmit finally: isLoggedIn: ${isLoggedIn}`));
   }
 
   function handleLogout() {
@@ -558,64 +563,107 @@ function App() {
   // запрашиваем первоначальные карточки и информацию о пользователе
 
   useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
     console.log(`In useEffect in LoggedIn: isLoggedIn: ${isLoggedIn}`);
     console.log(`In useEffect in LoggedIn: jwt: ${jwt}`); // we DO have the jwt here
-    if (isLoggedIn && jwt) {
+    if (isLoggedIn) {
+      // Promise.all([
+      //   api.getUserData(jwt),
+      //   api.getInitialCards(jwt)
+      // ])
+      // .then(([user, cards]) => {
+      //   setCurrentUser(user);
+      //   setUserData({
+      //     email: user.email
+      //   });
+      //   setCards(cards);
+      //   history.push('/');
+      //   console.log(`In UseEffect on isLoggedIn: set following:\n
+      //   JWT: ${jwt}\n
+      //   isLoggedIn: ${isLoggedIn}`)
+      // })
+      // .catch(err => console.log(err))
+      history.push('/');
+    } else {
+      localStorage.removeItem('jwt');
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+  
+  // проверяет, авторизирован ли пользователь через проверку токена
+
+  function tokenCheck() {
+    const jwt = localStorage.getItem('jwt');
+    console.log(`In tokenCheck: isLoggedIn: ${isLoggedIn}`);
+    console.log(`In tokenCheck: jwt: ${jwt}`);
+    if (jwt) {
+      setIsLoggedIn(true);
       Promise.all([
         api.getUserData(jwt),
         api.getInitialCards(jwt)
       ])
       .then(([user, cards]) => {
+        setIsLoggedIn(true);
         setCurrentUser(user);
-        setCards(cards)
+        setUserData({
+          email: user.email
+        });
+        setCards(cards);
+        history.push('/');
+        console.log(`In tokenCheck: set following:\n
+        JWT: ${jwt}\n
+        isLoggedIn: ${isLoggedIn}`)
       })
       .catch(err => console.log(err))
     } else {
       localStorage.removeItem('jwt');
     }
-  }, [isLoggedIn, jwt]);
-  
-  // проверяет, авторизирован ли пользователь через проверку токена
-  useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    console.log(`In token-check: was able to find token ${jwt}`);
-    if (jwt) {
-      auth.getContent(jwt).then((res) => {
-        if (res) {
-          console.log(`In token-check: heres response data: ${res}`);
-          setUserData({
-            email: res.email,
-            id: res._id
-          })
-          setIsLoggedIn(true);
-          console.log(`In tokenCheck: isLoggedIn: ${isLoggedIn}`);
-          history.push('/');
-        } else {
-          localStorage.removeItem('jwt');
-        }
-        console.log(`In token-check: was able to find token ${isLoggedIn}`);
-      })
-      .catch(err => console.log(err));
-    }
-  }, [history, isLoggedIn]);
+  }
 
-  useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      auth.getContent(jwt)
-        .then((data) => {
-          if (data) {
-            setIsLoggedIn(true);
-          } else {
-            console.log('Could not login');
-          }
+  // useEffect(() => {
+  //   const jwt = localStorage.getItem('jwt');
+  //   console.log(`In token-check: was able to find token ${jwt}`);
+  //   if (jwt) {
+  //     // auth.getContent(jwt).then((res) => {
+  //     api.getUserData(jwt).then((res) => {
+  //       if (res) {
+  //         console.log(`In token-check: heres response data: ${res}`);
+  //         // setUserData({
+  //         //   email: res.email,
+  //         //   id: res._id
+  //         // })
+  //         setIsLoggedIn(true);
+  //         console.log(`In tokenCheck: isLoggedIn: ${isLoggedIn}`);
+  //         history.push('/');
+  //       } else {
+  //         localStorage.removeItem('jwt');
+  //       }
+  //       console.log(`In token-check: was able to find token ${isLoggedIn}`);
+  //     })
+  //     .catch(err => console.log(err));
+  //   }
+  // }, [history]);
+
+  // useEffect(() => {
+  //   const jwt = localStorage.getItem('jwt');
+  //   if (jwt) {
+  //     auth.getContent(jwt)
+  //       .then((data) => {
+  //         if (data) {
+  //           setIsLoggedIn(true);
+  //         } else {
+  //           console.log('Could not login');
+  //         }
           
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, []);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }
+  // }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -641,6 +689,7 @@ function App() {
           <Route path="/signin">
             <Login 
               onLogin={handleLoginSubmit}
+              isLoggedIn={isLoggedIn}
             />
           </Route>
 

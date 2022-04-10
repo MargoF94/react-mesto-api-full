@@ -190,10 +190,7 @@ module.exports.login = (req, res, next) => {
       );
       console.log(token);
       console.log(JWT_SECRET);
-      return res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      }).send({ jwt: token });
+      return res.send({ jwt: token });
     })
     .catch(() => {
       next(new UnauthorizedError('Пожалуйста, зарегестрируйтесь.'));
