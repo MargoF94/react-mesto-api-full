@@ -438,11 +438,11 @@ function App() {
     setSelectedCard({});
   }
   function handleLikeClick(card) {
-    const jwt = localStorage.getItem('jwt');
+    // const jwt = localStorage.getItem('jwt');
     // проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked, jwt)
+    api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
       })
@@ -451,8 +451,8 @@ function App() {
       });
   }
   function handleCardDelete(card) {
-    const jwt = localStorage.getItem('jwt');
-    api.deleteCard(card._id, jwt)
+    // const jwt = localStorage.getItem('jwt');
+    api.deleteCard(card._id)
       .then(() => {
         setCards((cards) => cards.filter((c) => c._id !== card._id))
       })
@@ -462,8 +462,8 @@ function App() {
   }
 
   function handleUpdateUser(name, about) {
-    const jwt = localStorage.getItem('jwt');
-    api.changeUserData(name, about, jwt)
+    // const jwt = localStorage.getItem('jwt');
+    api.changeUserData(name, about)
       .then((data) => {
         setCurrentUser(data);
         closeAllPopups();
@@ -474,8 +474,8 @@ function App() {
   }
 
   function handleUpdateAvatar(url) {
-    const jwt = localStorage.getItem('jwt');
-    api.changeUserAvatar(url, jwt)
+    // const jwt = localStorage.getItem('jwt');
+    api.changeUserAvatar(url)
       .then((data) => {
         setCurrentUser(data);
         closeAllPopups()
@@ -602,8 +602,8 @@ function App() {
     if (jwt) {
       setIsLoggedIn(true);
       Promise.all([
-        api.getUserData(jwt),
-        api.getInitialCards(jwt)
+        api.getUserData(),
+        api.getInitialCards()
       ])
       .then(([user, cards]) => {
         setIsLoggedIn(true);
@@ -693,7 +693,7 @@ function App() {
             />
           </Route>
 
-          <Route path="/sign-up">
+          <Route path="/signup">
             <Register
               onRegister={handleRegister} />
           </Route> 

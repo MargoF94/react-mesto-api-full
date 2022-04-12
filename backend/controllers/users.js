@@ -7,7 +7,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError'); // 401
 const NotFoundError = require('../errors/NotFoundError'); // 404
 const ConflictError = require('../errors/ConflictError'); // 409
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = process.env;
 
 // возвращает всех пользователей
 module.exports.getUsers = (req, res, next) => {
@@ -178,14 +178,15 @@ module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw next(new UnauthorizedError('Пожалуйста, зарегестрируйтесь.'));
+    next(new UnauthorizedError('Пожалуйста, зарегестрируйтесь.'));
   }
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
+        // NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
+        JWT_SECRET,
         { expiresIn: '7d' },
       );
       console.log(token);
@@ -193,7 +194,7 @@ module.exports.login = (req, res, next) => {
       return res.send({ jwt: token });
     })
     .catch(() => {
-      next(new UnauthorizedError('Пожалуйста, зарегестрируйтесь.'));
+      next(new UnauthorizedError('Не удалось войти в систему.'));
     })
     .catch(next);
 };
