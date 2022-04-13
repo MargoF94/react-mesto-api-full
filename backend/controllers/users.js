@@ -188,8 +188,8 @@ module.exports.login = (req, res, next) => {
         process.env.JWT_SECRET,
         { expiresIn: '7d' },
       );
-      console.log(token);
-      console.log(JWT_SECRET);
+      console.log(`JWT in Login Controller: ${token}`);
+      console.log(`JWT_SECRET in Login Controller: ${JWT_SECRET}`);
       return res.send({ jwt: token });
     })
     .catch(() => {

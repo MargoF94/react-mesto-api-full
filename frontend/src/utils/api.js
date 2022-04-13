@@ -80,7 +80,6 @@ class Api{
         "Content-Type": "application/json",
         Authorization: `${localStorage.getItem('jwt')}`
       },
-      credentials: 'include',
       body: JSON.stringify({
         avatar: avatarUrl
       })
