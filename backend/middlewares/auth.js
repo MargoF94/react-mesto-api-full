@@ -9,12 +9,13 @@ console.log(process.env.NODE_ENV);
 
 module.exports = (req, res, next) => {
   console.dir(req.headers);
-  const token = req.headers.authorization;
-  if (!token) {
+  const { authorization } = req.headers;
+  // const token = req.headers.authorization;
+  if (!authorization) {
     console.log('Couldnt find authorization header');
     next(new UnauthorizedError('Пожалуйста, сначала авторизуйтесь.'));
   }
-  console.log(`Authorization: ${token}`);
+  console.log(`Authorization: ${authorization}`);
   console.log(`Headers: ${req.headers.contenttype}`);
   console.log(`JWT_SECRET: ${JWT_SECRET}`);
   // const token = authorization.replace('Bearer ', '');
@@ -26,7 +27,7 @@ module.exports = (req, res, next) => {
   try {
     // попытаемся верифицировать токен
     payload = jwt.verify(
-      token,
+      authorization,
       NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
     );
   } catch (err) {
