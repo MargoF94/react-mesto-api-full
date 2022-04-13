@@ -6,12 +6,12 @@ require('dotenv').config();
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  const { Authorization } = req.headers;
+  const { authorization } = req.headers;
   // const token = req.headers.authorization;
-  if (!Authorization) {
+  if (!authorization) {
     next(new UnauthorizedError('Пожалуйста, сначала авторизуйтесь.'));
   }
-  console.log(`Authorization in backend auth: ${Authorization}`);
+  console.log(`Authorization in backend auth: ${authorization}`);
   console.log(`JWT_SECRET in backend auth: ${JWT_SECRET}`);
   // const token = authorization.replace('Bearer ', '');
 
@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
   try {
     // попытаемся верифицировать токен
     payload = jwt.verify(
-      Authorization,
+      authorization,
       NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
     );
   } catch (err) {

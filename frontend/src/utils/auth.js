@@ -86,14 +86,15 @@ export const authorize = (email, password) => {
     if (res.status === 400) {
       throw new BadRequestError('Заполните все поля.');
     } else if (res.status === 401) {
-      throw new UnauthorizedError('Данный email еще не зарегестрирован.');
+      throw new UnauthorizedError('Данный email еще не зарегестрирован/ Нет доступа.');
     } else {
       return res.json();
     }
   })
   .then((data) => {
     console.log(data);
-      localStorage.setItem('jwt', data);
-      return data;
+      localStorage.setItem('jwt', data.jwt);
+      console.log(`In frontend auth: JWT_SECRET: ${data.secretKey}`);
+      return data.jwt;
   });
 }

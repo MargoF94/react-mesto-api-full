@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 // const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const {
@@ -15,7 +15,7 @@ const NotFoundError = require('./errors/NotFoundError'); // 404
 const auth = require('./middlewares/auth');
 
 const app = express();
-app.use(cookieParser()); // подключаем парсер кук как мидлвэр
+// app.use(cookieParser()); // подключаем парсер кук как мидлвэр
 
 const {
   createUser,
@@ -25,9 +25,6 @@ const {
 // подклюение к серверу MongoDB
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true,
 });
 
 const corsOptions = {
@@ -54,10 +51,10 @@ app.get('/crash-test', () => {
 app.post('/signin', validateSignIn, login);
 app.post('/signup', validateSignUp, createUser);
 
-// app.use(auth);
+app.use(auth);
 
-app.use('/', auth, routerUsers);
-app.use('/', auth, routerCards);
+app.use('/', routerUsers);
+app.use('/', routerCards);
 app.use('*', () => {
   throw new NotFoundError('Указан неверный путь');
 });

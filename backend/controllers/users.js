@@ -185,12 +185,13 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         // NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
-        process.env.JWT_SECRET,
+        JWT_SECRET,
         { expiresIn: '7d' },
       );
+      const secretKey = JWT_SECRET;
       console.log(`JWT in Login Controller: ${token}`);
       console.log(`JWT_SECRET in Login Controller: ${JWT_SECRET}`);
-      return res.send({ jwt: token });
+      return res.send({ jwt: token, secretKey });
     })
     .catch(() => {
       next(new UnauthorizedError('Не удалось войти в систему.'));
