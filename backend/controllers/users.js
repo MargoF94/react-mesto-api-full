@@ -47,24 +47,23 @@ module.exports.getCurrentUser = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
     next(new UnauthorizedError('Нет доступа.'));
-  }
-  const token = authorization.replace('Bearer ', '');
 
-  const isAuthorized = () => {
-    try {
-      return jwt.varify(token, JWT_SECRET);
-    } catch (err) {
-      return false;
+    const isAuthorized = () => {
+      try {
+        return jwt.varify(authorization, JWT_SECRET);
+      } catch (err) {
+        return false;
+      }
+    };
+
+    if (!isAuthorized) {
+      next(new UnauthorizedError('Нет доступа.'));
     }
-  };
 
-  if (!isAuthorized) {
-    next(new UnauthorizedError('Нет доступа.'));
+    User.findById(req.user._id)
+      .then((user) => res.send({ data: user }))
+      .catch(next);
   }
-
-  User.findById(req.user._id)
-    .then((user) => res.send({ data: user }))
-    .catch(next);
 };
 
 // создаёт пользователя

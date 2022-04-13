@@ -30,10 +30,11 @@ export const getContent = (jwt) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `${jwt}`,
+      'Authorization': `${jwt}`,
     },
   })
   .then((res) => {
+    console.log(`In auth.getContent: response: ${res}`);
     return res.json();
   })
 }
@@ -92,9 +93,7 @@ export const authorize = (email, password) => {
   })
   .then((data) => {
     console.log(data);
-    if (data.jwt) {
-      localStorage.setItem('jwt', data.jwt);
-      return data.jwt;
-    }
+      localStorage.setItem('jwt', data);
+      return data;
   });
 }

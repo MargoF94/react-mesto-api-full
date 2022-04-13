@@ -16,7 +16,7 @@ class Api{
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
     }).then(this._checkResponse)
   }
@@ -26,7 +26,7 @@ class Api{
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
       body: JSON.stringify({
         name: name,
@@ -41,7 +41,7 @@ class Api{
       method: 'DELETE',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
     })
     .then(this._checkResponse)
@@ -52,7 +52,7 @@ class Api{
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
     })
     .then(this._checkResponse)
@@ -63,7 +63,7 @@ class Api{
       method: 'PATCH',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
       body: JSON.stringify({
         name: name,
@@ -93,7 +93,7 @@ class Api{
       method: 'PUT',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
     }).then(this._checkResponse)
   }
@@ -103,7 +103,7 @@ class Api{
       method: 'DELETE',
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
     })
     .then(this._checkResponse)
@@ -114,7 +114,7 @@ class Api{
       method: `${isLiked ? 'PUT' : 'DELETE'}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem('jwt')}`
+        "Authorization": `${localStorage.getItem('jwt')}`
       },
     }).then(this._checkResponse)
   }

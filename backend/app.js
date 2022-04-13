@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 // const cookieParser = require('cookie-parser');
@@ -16,31 +17,6 @@ const auth = require('./middlewares/auth');
 const app = express();
 // app.use(cookieParser()); // подключаем парсер кук как мидлвэр
 
-// const CORS_ALLOWED_ORIGIN = [
-//   'http://localhost:3000',
-//   'https://localhost:3000',
-//   'http://local-mesto.nomoredomains.xyz',
-//   'https://local-mesto.nomoredomains.xyz',
-//   'http://api.local-mesto.nomoredomains.xyz',
-//   'https://api.local-mesto.nomoredomains.xyz',
-// ];
-
-// app.use((req, res, next) => {
-//   const { origin } = req.headers;
-//   const { method } = req.method;
-
-//   if (method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-//     res.header('Access-Control-Allow-Headers', '*');
-//     return res.end();
-//   }
-
-//   if (CORS_ALLOWED_ORIGIN.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//   }
-//   return next();
-// });
-
 const {
   createUser,
   login,
@@ -49,6 +25,9 @@ const {
 // подклюение к серверу MongoDB
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
 });
 
 const corsOptions = {
@@ -75,10 +54,10 @@ app.get('/crash-test', () => {
 app.post('/signin', validateSignIn, login);
 app.post('/signup', validateSignUp, createUser);
 
-app.use(auth);
+// app.use(auth);
 
-app.use('/', routerUsers);
-app.use('/', routerCards);
+app.use('/', auth, routerUsers);
+app.use('/', auth, routerCards);
 app.use('*', () => {
   throw new NotFoundError('Указан неверный путь');
 });
