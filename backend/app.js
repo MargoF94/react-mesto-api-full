@@ -31,8 +31,8 @@ const corsOptions = {
   origin: [
     'https://local-mesto.nomoredomains.xyz',
     'http://local-mesto.nomoredomains.xyz',
-    'https://localhost:3000',
-    'http://localhost:3000',
+    'https://localhost:3001',
+    'http://localhost:3001',
   ],
 };
 
@@ -74,6 +74,10 @@ app.use((err, req, res, next) => {
     });
   next();
 });
+
+// app.listen(3000, () => {
+//   console.log("I'm working!");
+// });
 
 app.listen(3000, () => {
   console.log("I'm working!");

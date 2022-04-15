@@ -36,7 +36,7 @@ class Api{
     .then(this._checkResponse)
   };
 
-  deleteCard(id, jwt) {
+  deleteCard(id) {
     return fetch(`${this._baseUrl}/cards/${id}`, {
       method: 'DELETE',
       headers: {
@@ -119,7 +119,8 @@ class Api{
   }
 }
 const api = new Api({
-  baseUrl: 'https://api.local-mesto.nomoredomains.work',
+  // baseUrl: 'https://api.local-mesto.nomoredomains.work',
+  baseUrl: 'http://localhost:3000',
 });
 
 export default api;

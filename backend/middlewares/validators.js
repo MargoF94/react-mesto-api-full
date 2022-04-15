@@ -61,7 +61,7 @@ module.exports.validateCreateCard = celebrate({
 
 module.exports.validateGetUserById = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().length(24).hex().required(),
+    userId: Joi.string().hex().required(),
   }),
 });
 

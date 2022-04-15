@@ -1,7 +1,10 @@
 import BadRequestError from '../utils/errors/BadRequestError'; // 400
 import UnauthorizedError from '../utils/errors/UnauthorizedError'; // 401
 
-export const baseUrl = 'https://api.local-mesto.nomoredomains.work';
+// export const baseUrl = 'https://api.local-mesto.nomoredomains.work';
+
+export const baseUrl = 'http://localhost:3000';
+
 
 // const request = ({endPoint, method = 'POST', jwt, body}) => {
 //   const config = {

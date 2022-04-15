@@ -503,18 +503,6 @@ function App() {
         if(!jwt) {
           throw new Error('Произошла ошибка (авторизации на фронте)');
         }
-        auth.getContent(jwt)
-          .then((res) => {
-            setUserData({ email: res.email });
-          })
-          .catch((err) => console.log(err));
-          setIsLoggedIn(true);
-
-          api.getUserData()
-            .then((user) => {
-              setCurrentUser(user);
-            })
-            .catch((err) => console.log(err));
         // tokenCheck();
         // localStorage.setItem('jwt', jwt);
         // setIsLoggedIn(true);
@@ -530,8 +518,13 @@ function App() {
         //     isLoggedIn: ${isLoggedIn}`)
         //   });
       })
-      .catch(err => console.log(err))
-      .finally(() => console.log(`In handleLoginSubmit finally: isLoggedIn: ${isLoggedIn}`));
+      .then(() => {
+        tokenCheck();
+            
+          setIsLoggedIn(true);
+          history.push('/');
+        })
+        .catch(err => console.log(err));
   }
 
   function handleLogout() {
@@ -571,6 +564,56 @@ function App() {
   function handleCloseInfoTooltip (isSuccess) {
     setIsInfoPopupOpen(false);
   }
+
+  // Проверяет наличие токена
+  function tokenCheck () {
+    if(localStorage.getItem('jwt')) {
+      // Promise.all([
+      //   api.getUserData(),
+      //   api.getInitialCards()
+      // ])
+      // .then(([user, cards]) => {
+      //   console.log(user);
+      //   console.log(cards);
+      //   setCurrentUser(user);
+      //   setUserData({
+      //     email: user.email
+      //   });
+      //   setCards(cards);
+      //   history.push('/');
+      //   console.log(`In UseEffect on isLoggedIn: isLoggedIn: ${isLoggedIn}`)
+      // })
+      // .catch(err => console.log(err))
+      api.getUserData()
+        .then((user) => {
+          console.log(user);
+          setCurrentUser(user);
+          setUserData({
+            email: user.email
+          });
+        })
+        .catch((err) => console.log(err));
+
+      api.getInitialCards()
+        .then((cards) => {
+          console.log(cards.data);
+          setCards(cards.data);
+          history.push('/');
+        })
+        .catch((err) => console.log(err));
+    }
+  }
+
+  useEffect(() => {
+    tokenCheck()
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem('jwt')) {
+      setIsLoggedIn(true);
+    }
+    console.log(isLoggedIn);
+  });
 
   // запрашиваем первоначальные карточки и информацию о пользователе
 
@@ -643,7 +686,7 @@ function App() {
         .then((res) => {
           console.log(`In getContent on [history]: res: ${res}`);
           setIsLoggedIn(true);
-          setUserData(res.email);
+          setUserData({ email: res.email });
           history.push('/');
         })
         .catch((err) => console.log(err))

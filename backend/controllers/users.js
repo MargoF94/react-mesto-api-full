@@ -44,26 +44,16 @@ module.exports.getUserdById = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
+  console.log(`In middleware getCurrentUser: user _id: ${req.user_id}`);
+
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
     next(new UnauthorizedError('Нет доступа.'));
-
-    const isAuthorized = () => {
-      try {
-        return jwt.varify(authorization, JWT_SECRET);
-      } catch (err) {
-        return false;
-      }
-    };
-
-    if (!isAuthorized) {
-      next(new UnauthorizedError('Нет доступа.'));
-    }
-
-    User.findById(req.user._id)
-      .then((user) => res.send({ data: user }))
-      .catch(next);
   }
+
+  return User.findById(req.user._id)
+    .then((user) => res.send({ data: user }))
+    .catch(next);
 };
 
 // создаёт пользователя
