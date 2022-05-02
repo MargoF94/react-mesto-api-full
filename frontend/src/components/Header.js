@@ -1,9 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Header({isLoggedIn, onLogout, email}) {
 
   const location = useLocation();
+  const currentUser = React.useContext(CurrentUserContext);
 
   function handleLogout() {
     onLogout();
@@ -15,7 +17,7 @@ function Header({isLoggedIn, onLogout, email}) {
         <div className="header__button-container">
           { isLoggedIn && 
             <>
-              <span className="header__email">{email}</span>
+              <span className="header__email">{currentUser.email}</span>
               <button className="header__logout-button header__link" onClick={handleLogout}>Выйти</button>
             </> }
           { (location.pathname === '/signin') &&

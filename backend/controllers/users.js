@@ -44,10 +44,10 @@ module.exports.getUserdById = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  console.log(`In middleware getCurrentUser: user _id: ${req.user_id}`);
+  console.log(`In middleware getCurrentUser: user _id: ${req.params._id}`);
 
   const { authorization } = req.headers;
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!authorization) {
     next(new UnauthorizedError('Нет доступа.'));
   }
 
@@ -172,16 +172,16 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
+      const id = user._id;
       const token = jwt.sign(
         { _id: user._id },
         // NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
         JWT_SECRET,
         { expiresIn: '7d' },
       );
-      const secretKey = JWT_SECRET;
       console.log(`JWT in Login Controller: ${token}`);
-      console.log(`JWT_SECRET in Login Controller: ${JWT_SECRET}`);
-      return res.send({ jwt: token, secretKey });
+      console.log(`user id in Login Controller: ${id}`);
+      return res.send({ jwt: token, _id: id });
     })
     .catch(() => {
       next(new UnauthorizedError('Не удалось войти в систему.'));

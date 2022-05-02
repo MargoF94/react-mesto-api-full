@@ -97,7 +97,7 @@ export const authorize = (email, password) => {
   .then((data) => {
     console.log(data);
       localStorage.setItem('jwt', data.jwt);
-      console.log(`In frontend auth: JWT_SECRET: ${data.secretKey}`);
-      return data.jwt;
+      console.log(`In frontend auth: user id: ${data._id}`);
+      return data;
   });
 }

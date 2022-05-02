@@ -22,7 +22,14 @@ module.exports.createCard = (req, res, next) => {
     owner,
   })
     .then((card) => {
-      res.send({ data: card });
+      res.send({
+        _id: card._id,
+        name: card.name,
+        link: card.link,
+        owner: card.owner,
+        likes: card.likes,
+        createdAt: card.createdAt,
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -45,7 +52,8 @@ module.exports.likeCard = (req, res, next) => {
       if (!card) {
         next(new NotFoundError('Передан несуществующий _id карточки.'));
       } else {
-        res.send({ data: card });
+        console.log(`In likeCardController: ${card}`);
+        res.send({ card });
       }
     })
     .catch((err) => {
@@ -68,7 +76,8 @@ module.exports.dislikeCard = (req, res, next) => {
       if (!card) {
         next(new NotFoundError('Карточка с данным _id не существует.'));
       } else {
-        res.send({ data: card });
+        console.log(`In dislikeCardController: ${card}`);
+        res.send({ card });
       }
     })
     .catch((err) => {

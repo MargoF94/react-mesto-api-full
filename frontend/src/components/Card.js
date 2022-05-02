@@ -4,10 +4,15 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 function Card({card, onCardClick, onCardLike, onCardDelete}) {
 
   const currentUser = React.useContext(CurrentUserContext);
+  console.log(`In Card.js: currentUser._id: ${JSON.stringify(currentUser._id)}`);
+  console.log(`In Card.js: card.owner: ${card.owner}`);
+  console.log(`In Card.js: card.likes: ${card.likes}`);
 
   // Определяем, являемся ли мы владельцем текущей карточки
-  const isOwn = card.owner._id === currentUser._id;
-  const isLiked = card.likes.some(i => i._id === currentUser._id);
+  const isOwn = card.owner === currentUser._id;
+  console.log(`In Card.js: isOwn: ${isOwn}`);
+  const isLiked = card.likes.some(i => i === currentUser._id);
+  console.log(`In Card.js: isLiked: ${isLiked}`);
 
   // Создаём переменную, которую после зададим в `className` для кнопки удаления
   const cardDeleteButtonClassName = (

@@ -6,6 +6,7 @@ function Main({cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCa
 
   console.log(cards);
   const currentUser = React.useContext(CurrentUserContext);
+  console.log(currentUser);
 
   return(
     <main className="main-container">

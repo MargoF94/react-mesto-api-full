@@ -437,24 +437,30 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setSelectedCard({});
   }
+
   function handleLikeClick(card) {
-    // const jwt = localStorage.getItem('jwt');
-    // проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked)
+    const isLiked = card.likes.some(i => i === currentUser._id);
+    // console.log(`In handleLikeClick: currentUser: ${JSON.stringify(currentUser)}`);
+    // console.log(`In handleLikeClick: card: ${JSON.stringify(card)}`);
+    // console.log(`In handleLikeClick: isLiked: ${isLiked}`);
+    if(card.owner !== currentUser._id) {
+      api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+        // console.log(`In App.js changeLikeCardStatus: newCard: ${JSON.stringify(card)}`);
+        // const newCard = card;
+        setCards((state) => state.map((c) => c._id === card._id ? newCard.card : c));
       })
       .catch((err) => {
         console.log(err);
       });
+    }
   }
+
   function handleCardDelete(card) {
     // const jwt = localStorage.getItem('jwt');
     api.deleteCard(card._id)
       .then(() => {
-        setCards((cards) => cards.filter((c) => c._id !== card._id))
+        setCards((cards) => cards.filter((c) => c._id !== card._id));
       })
       .catch((err) => {
         console.log(err);
@@ -485,24 +491,18 @@ function App() {
       });
   }
 
-  // function handleLogin(email) {
-  //   setIsLoggedIn(true);
-  //   setUserData({
-  //     email: email
-  //   })
-  // }
-
   function handleLoginSubmit(email, password) {
     if (!email || !password) {
       return;
     }
     // Setting JWT after authorization
     auth.authorize(email, password)
-      .then((jwt) => {
-        console.log(`In handleLoginSubmit: res data: ${jwt}`);
-        if(!jwt) {
+      .then((data) => {
+        console.log(`In handleLoginSubmit: res data: ${data.jwt}`);
+        if(!data.jwt) {
           throw new Error('Произошла ошибка (авторизации на фронте)');
         }
+        return data._id
         // tokenCheck();
         // localStorage.setItem('jwt', jwt);
         // setIsLoggedIn(true);
@@ -518,11 +518,14 @@ function App() {
         //     isLoggedIn: ${isLoggedIn}`)
         //   });
       })
-      .then(() => {
+      .then((id) => {
         tokenCheck();
-            
-          setIsLoggedIn(true);
-          history.push('/');
+        setCurrentUser({
+          _id: id,
+        });
+        
+        setIsLoggedIn(true);
+        history.push('/');
         })
         .catch(err => console.log(err));
   }
@@ -567,176 +570,51 @@ function App() {
 
   // Проверяет наличие токена
   function tokenCheck () {
-    if(localStorage.getItem('jwt')) {
-      // Promise.all([
-      //   api.getUserData(),
-      //   api.getInitialCards()
-      // ])
-      // .then(([user, cards]) => {
-      //   console.log(user);
-      //   console.log(cards);
-      //   setCurrentUser(user);
-      //   setUserData({
-      //     email: user.email
-      //   });
-      //   setCards(cards);
-      //   history.push('/');
-      //   console.log(`In UseEffect on isLoggedIn: isLoggedIn: ${isLoggedIn}`)
-      // })
-      // .catch(err => console.log(err))
-      api.getUserData()
-        .then((user) => {
-          console.log(user);
-          setCurrentUser(user);
-          setUserData({
-            email: user.email
-          });
+    const jwt = localStorage.getItem('jwt');
+    console.log(`In ckeckToken: jwt: ${jwt}`);
+    if(jwt) {
+      auth.getContent(jwt)
+        .then((res) => {
+          if(res) {
+            console.log(`In tokenCheck: getContent response: ${res}`);
+            setUserData({
+              email:res.email,
+              id: res._id,
+            })
+            setIsLoggedIn(true);
+            history.push('/');
+          } else {
+            localStorage.removeItem('jwt');
+          }
         })
-        .catch((err) => console.log(err));
-
-      api.getInitialCards()
-        .then((cards) => {
-          console.log(cards.data);
-          setCards(cards.data);
-          history.push('/');
-        })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          localStorage.removeItem('jwt');
+        });
     }
   }
 
   useEffect(() => {
-    tokenCheck()
-  }, []);
+    tokenCheck();
+  }, [history]);
 
+  // Если пользователь залогинен, возвращаем карточки и пользователя
   useEffect(() => {
-    if (localStorage.getItem('jwt')) {
-      setIsLoggedIn(true);
-    }
-    console.log(isLoggedIn);
-  });
-
-  // запрашиваем первоначальные карточки и информацию о пользователе
-
-  useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    console.log(`In useEffect in LoggedIn: isLoggedIn: ${isLoggedIn}`);
-    console.log(`In useEffect in LoggedIn: jwt: ${jwt}`); // we DO have the jwt here
     if (isLoggedIn) {
-      // Promise.all([
-      //   api.getUserData(jwt),
-      //   api.getInitialCards(jwt)
-      // ])
-      // .then(([user, cards]) => {
-      //   setCurrentUser(user);
-      //   setUserData({
-      //     email: user.email
-      //   });
-      //   setCards(cards);
-      //   history.push('/');
-      //   console.log(`In UseEffect on isLoggedIn: set following:\n
-      //   JWT: ${jwt}\n
-      //   isLoggedIn: ${isLoggedIn}`)
-      // })
-      // .catch(err => console.log(err))
-      history.push('/');
-    } else {
-      localStorage.removeItem('jwt');
+      Promise.all([
+        api.getUserData(),
+        api.getInitialCards()
+      ])
+      .then(([user, cards]) => {
+        setCurrentUser(user.data);
+        setCards(cards.data);
+        console.log(`In after getInitialCards: cards in setCards: ${cards.data}`);
+        console.log(`In after getInitialCards: ucurrentUser in setCards: ${user.data}`);
+      })
+      .catch(err => console.log(err))
     }
   }, [isLoggedIn]);
 
-  // useEffect(() => {
-  //   tokenCheck();
-  // }, []);
-  
-  // // проверяет, авторизирован ли пользователь через проверку токена
-
-  // function tokenCheck() {
-  //   const jwt = localStorage.getItem('jwt');
-  //   console.log(`In tokenCheck: isLoggedIn: ${isLoggedIn}`);
-  //   console.log(`In tokenCheck: jwt: ${jwt}`);
-  //   if (jwt) {
-  //     setIsLoggedIn(true);
-  //     Promise.all([
-  //       api.getUserData(),
-  //       api.getInitialCards()
-  //     ])
-  //     .then(([user, cards]) => {
-  //       setIsLoggedIn(true);
-  //       setCurrentUser(user);
-  //       setUserData({
-  //         email: user.email
-  //       });
-  //       setCards(cards);
-  //       history.push('/');
-  //       console.log(`In tokenCheck: set following:\n
-  //       JWT: ${jwt}\n
-  //       isLoggedIn: ${isLoggedIn}`)
-  //     })
-  //     .catch(err => console.log(err))
-  //   } else {
-  //     localStorage.removeItem('jwt');
-  //   }
-  // }
-
-  useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-
-    if (jwt) {
-      auth.getContent(jwt)
-        .then((res) => {
-          console.log(`In getContent on [history]: res: ${res}`);
-          setIsLoggedIn(true);
-          setUserData({ email: res.email });
-          history.push('/');
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          console.log(`In getContent on [history]: isLoggedIn: ${isLoggedIn}`);
-        })
-    }
-  }, [history]);
-
-  // useEffect(() => {
-  //   const jwt = localStorage.getItem('jwt');
-  //   console.log(`In token-check: was able to find token ${jwt}`);
-  //   if (jwt) {
-  //     // auth.getContent(jwt).then((res) => {
-  //     api.getUserData(jwt).then((res) => {
-  //       if (res) {
-  //         console.log(`In token-check: heres response data: ${res}`);
-  //         // setUserData({
-  //         //   email: res.email,
-  //         //   id: res._id
-  //         // })
-  //         setIsLoggedIn(true);
-  //         console.log(`In tokenCheck: isLoggedIn: ${isLoggedIn}`);
-  //         history.push('/');
-  //       } else {
-  //         localStorage.removeItem('jwt');
-  //       }
-  //       console.log(`In token-check: was able to find token ${isLoggedIn}`);
-  //     })
-  //     .catch(err => console.log(err));
-  //   }
-  // }, [history]);
-
-  // useEffect(() => {
-  //   const jwt = localStorage.getItem('jwt');
-  //   if (jwt) {
-  //     auth.getContent(jwt)
-  //       .then((data) => {
-  //         if (data) {
-  //           setIsLoggedIn(true);
-  //         } else {
-  //           console.log('Could not login');
-  //         }
-          
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -771,7 +649,7 @@ function App() {
               onRegister={handleRegister} />
           </Route> 
           <Route path="*">
-              {isLoggedIn ? <Redirect to="/"/> : <Redirect to="/signin"/>}
+              {localStorage.getItem('jwt') ? <Redirect to="/"/> : <Redirect to="/signin"/>}
             </Route> 
         </Switch>
 

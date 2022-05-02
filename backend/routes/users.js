@@ -13,7 +13,7 @@ const {
 } = require('../middlewares/validators');
 
 routerUsers.get('/users', getUsers);
-routerUsers.get('/users/me', validateGetUserById, getCurrentUser);
+routerUsers.get('/users/me', getCurrentUser);
 routerUsers.get('/users/:userId', validateGetUserById, getUserdById);
 routerUsers.patch('/users/me', validateUpdateUser, updateUser);
 routerUsers.patch('/users/me/avatar', validateUpdateAvatar, updateAvatar);
