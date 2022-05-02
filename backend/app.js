@@ -75,10 +75,6 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// app.listen(3000, () => {
-//   console.log("I'm working!");
-// });
-
 app.listen(3000, () => {
   console.log("I'm working!");
 });
