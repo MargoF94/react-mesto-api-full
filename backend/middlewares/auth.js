@@ -27,8 +27,8 @@ module.exports = (req, res, next) => {
     );
   } catch (err) {
     // отправим ошибку, если не получилось
-    console.log(err);
-    next(new UnauthorizedError('Необходима авторизация.'));
+    console.log(`In jwt.varify: ${err}`);
+    // next(new UnauthorizedError('Необходима авторизация.'));
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса
