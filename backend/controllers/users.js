@@ -185,7 +185,7 @@ module.exports.login = (req, res, next) => {
     })
     .catch((err) => {
       console.log(`In User controllers: error: ${err}`);
-      next(new UnauthorizedError('Не удалось войти в систему.'));
+      // next(new UnauthorizedError('Не удалось войти в систему.'));
     })
     .catch(next);
 };
