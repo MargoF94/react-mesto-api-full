@@ -183,7 +183,8 @@ module.exports.login = (req, res, next) => {
       console.log(`user id in Login Controller: ${id}`);
       return res.send({ jwt: token, _id: id });
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(`In User controllers: error: ${err}`);
       next(new UnauthorizedError('Не удалось войти в систему.'));
     })
     .catch(next);
