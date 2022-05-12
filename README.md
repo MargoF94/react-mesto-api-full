@@ -30,4 +30,5 @@
 
 ## Посмотреть проект
 
-[Нажми меня для доступа по домену](https://local-mesto.nomoredomains.xyz/)
+ IP-адрес: 51.250.0.138
+[Или нажми меня для доступа по домену](https://local-mesto.nomoredomains.xyz/)
