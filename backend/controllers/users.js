@@ -7,7 +7,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError'); // 401
 const NotFoundError = require('../errors/NotFoundError'); // 404
 const ConflictError = require('../errors/ConflictError'); // 409
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET = 'super-strong-secret' } = process.env;
 
 // возвращает всех пользователей
 module.exports.getUsers = (req, res, next) => {
